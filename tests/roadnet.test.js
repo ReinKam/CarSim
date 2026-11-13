@@ -112,3 +112,19 @@ test('veier som er stengt for vanlig biltrafikk blir merket og brukes ikke som s
   assert.deepEqual(net.roads.map((r) => r.restricted), [true, false, true, false]);
   assert.equal(net.findSpawn().road.name, 'Vanlig gate');
 });
+
+test('gangfelt beholdes selv om kartsvaret gjentar punktet uten merkelapper', () => {
+  // Overpass sends a tagged node first ("out body") and then the same node bare (">; out skel").
+  const osm = {
+    elements: [
+      { type: 'node', id: 2, lat: 59.941, lon: 10.898, tags: { highway: 'crossing' } },
+      { type: 'way', id: 10, nodes: [1, 2, 3], tags: { highway: 'tertiary' } },
+      { type: 'node', id: 1, lat: 59.941, lon: 10.897 },
+      { type: 'node', id: 2, lat: 59.941, lon: 10.898 },
+      { type: 'node', id: 3, lat: 59.941, lon: 10.899 },
+    ],
+  };
+  const net = buildRoadNet(osm, AREA);
+  assert.equal(net.crossings.length, 1);
+  assert.ok(Math.abs(net.crossings[0].dirX) > 0.99);
+});

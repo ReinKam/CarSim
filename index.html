@@ -74,6 +74,14 @@
     background: rgba(13, 16, 19, .82); border: 1px solid var(--line); border-radius: 10px; white-space: nowrap;
     transition: opacity .6s; }
 
+  @media (max-width: 900px) {
+    #help { display: none; }
+    #minimap { width: 120px; height: 120px; bottom: 104px; }
+    #street { bottom: 104px; max-width: 55vw; }
+    #toasts { max-width: 70vw; top: 110px; }
+    #dash { gap: 10px; padding: 8px 12px; }
+  }
+
   /* Report */
   .verdict { display: flex; align-items: center; gap: 16px; padding: 16px 18px; border-radius: 12px; margin: 14px 0 6px;
     border: 1px solid var(--line); background: var(--panel2); }

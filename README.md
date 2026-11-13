@@ -88,12 +88,20 @@ npm install          # én gang
 npm test             # automatiske tester (fysikk, veinett, regler, skilt)
 npm run serve        # lokal server på http://localhost:8080
 npm run build        # lager dist/carsim.html (alt i én fil)
+npm run deploy       # bygger og publiserer til GitHub Pages
 node tools/browser-test.mjs "http://localhost:8080/?demo"   # kjører appen i hodeløs Chrome
 ```
 
 `?demo` i adressen tvinger fram øvingsbanen i stedet for ekte kart.
 
-Publisering skjer via GitHub Pages fra `main`-grenen: det som ligger i repoet er det som kjører.
+### Publisering
+
+Kildekoden ligger i `main`. Nettsiden (GitHub Pages) serveres fra grenen `gh-pages`, som bare
+inneholder den ferdigbygde én-fil-versjonen. Slik publiseres en ny versjon:
+
+```
+npm test && npm run deploy
+```
 
 ## Feilsøking
 

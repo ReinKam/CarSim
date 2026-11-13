@@ -131,6 +131,13 @@ export function buildRoadNet(osm, area) {
   const nodes = new Map();
   for (const el of osm.elements) {
     if (el.type === 'node' && Number.isFinite(el.lat) && Number.isFinite(el.lon)) {
+      // The same node can appear twice in Overpass output: once with its tags and once
+      // as a bare point of a way. Never let the bare copy wipe out the tags.
+      const known = nodes.get(el.id);
+      if (known) {
+        if (el.tags) known.tags = el.tags;
+        continue;
+      }
       const p = proj.toXY(el.lat, el.lon);
       nodes.set(el.id, { id: el.id, x: p.x, y: p.y, tags: el.tags || null });
     }

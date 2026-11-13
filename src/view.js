@@ -30,6 +30,8 @@ export class View {
     this._frame = 0;
     this._lowFor = 0;
     this._highFor = 0;
+    this._trial = null;
+    this._lockedFor = 0;
 
     // Mirrors: each is rendered to a small texture and drawn on top of the picture.
     this.mirrors = {};
@@ -73,6 +75,10 @@ export class View {
     this.renderer.setPixelRatio(this.scale);
     this.renderer.setSize(w, h, false);
     this.camera.aspect = w / h;
+    // 62 degrees up-down suits a wide screen. On a narrow window, widen it so the
+    // driver still sees about 84 degrees left-right.
+    const wanted = (2 * Math.atan(Math.tan((84 * Math.PI) / 360) / (w / h)) * 180) / Math.PI;
+    this.camera.fov = clamp(wanted, 62, 100);
     this.camera.updateProjectionMatrix();
 
     // Lay out the mirrors in CSS pixels (y measured from the bottom).
@@ -94,7 +100,13 @@ export class View {
     place(this.mirrors.right, w - 14 - sideW / 2, sideY, sideW);
   }
 
-  /** Keep the frame rate usable by lowering or raising the render resolution. */
+  /**
+   * Keep the frame rate usable by lowering or raising the render resolution.
+   * A lower resolution only helps when the graphics chip is the bottleneck, so
+   * after each reduction we check that it actually helped. If it did not (for
+   * example a 30 Hz screen, or a browser that limits the frame rate), the
+   * resolution is restored and left alone.
+   */
   _adaptResolution(dt) {
     this._fpsAcc += dt;
     this._fpsFrames++;
@@ -102,6 +114,20 @@ export class View {
     this.fps = this._fpsFrames / this._fpsAcc;
     this._fpsAcc = 0;
     this._fpsFrames = 0;
+
+    if (this._trial) {
+      if (--this._trial.wait > 0) return;
+      if (this.fps < this._trial.fpsBefore * 1.15) {
+        this.scale = this._trial.scaleBefore;
+        this._lockedFor = 60; // seconds
+        this.resize();
+      }
+      this._trial = null;
+      this._lowFor = this._highFor = 0;
+      return;
+    }
+    if (this._lockedFor > 0) this._lockedFor--;
+
     if (this.fps < 40) {
       this._lowFor++;
       this._highFor = 0;
@@ -111,11 +137,12 @@ export class View {
     } else {
       this._lowFor = this._highFor = 0;
     }
-    let next = this.scale;
-    if (this._lowFor >= 2) next = Math.max(0.5, this.scale - 0.15);
-    else if (this._highFor >= 6) next = Math.min(this.maxScale, this.scale + 0.1);
-    if (next !== this.scale) {
-      this.scale = next;
+    if (this._lowFor >= 2 && this.scale > 0.5 && !(this._lockedFor > 0)) {
+      this._trial = { fpsBefore: this.fps, scaleBefore: this.scale, wait: 2 };
+      this.scale = Math.max(0.5, this.scale - 0.2);
+      this.resize();
+    } else if (this._highFor >= 5 && this.scale < this.maxScale) {
+      this.scale = Math.min(this.maxScale, this.scale + 0.125);
       this._lowFor = this._highFor = 0;
       this.resize();
     }

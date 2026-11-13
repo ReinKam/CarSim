@@ -1,0 +1,21 @@
+{
+  "name": "carsim",
+  "version": "0.1.0",
+  "description": "Bilsimulator for føreropplæring (klasse B) – nettleserbasert prototype",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "build": "node tools/build.mjs",
+    "serve": "node tools/serve.mjs"
+  },
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "puppeteer-core": "^25.17.0",
+    "three": "^0.187.0"
+  },
+  "type": "module",
+  "private": true
+}

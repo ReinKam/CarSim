@@ -21,8 +21,14 @@ execFileSync(process.execPath, [path.join(root, 'tools/build.mjs')], { stdio: 'i
 const sha = git(['rev-parse', '--short', 'HEAD']);
 const work = fs.mkdtempSync(path.join(os.tmpdir(), 'carsim-pages-'));
 try {
-  git(['fetch', 'origin', 'gh-pages']);
-  git(['worktree', 'add', '--force', '-B', 'gh-pages', work, 'origin/gh-pages']);
+  let base = null;
+  try {
+    git(['fetch', '--depth=1', 'origin', 'gh-pages']);
+    base = git(['rev-parse', 'FETCH_HEAD']);
+  } catch {
+    /* no gh-pages branch yet: start one */
+  }
+  git(base ? ['worktree', 'add', '--force', '-B', 'gh-pages', work, base] : ['worktree', 'add', '--force', '--orphan', '-b', 'gh-pages', work]);
   for (const entry of fs.readdirSync(work)) {
     if (entry !== '.git') fs.rmSync(path.join(work, entry), { recursive: true, force: true });
   }
@@ -33,7 +39,7 @@ try {
     console.log('Ingen endring å publisere.');
   } else {
     git(['commit', '-q', '-m', `Publiser ${sha}`], work);
-    git(['push', 'origin', 'gh-pages'], work);
+    git(['push', '-f', 'origin', 'gh-pages'], work);
     console.log(`Publisert ${sha} til https://reinkam.github.io/CarSim/ (klar om et minutt eller to).`);
   }
 } finally {

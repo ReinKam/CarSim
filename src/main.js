@@ -92,6 +92,7 @@ async function loadWorld(forceDemo = false) {
 }
 
 function startSession() {
+  if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur();
   audio.start();
   sim.reset();
   view.mirrorsOn = ui.mirrors;
@@ -180,6 +181,8 @@ input.onAction((action) => {
       break;
   }
 });
+
+input.onFocusChange = (focused) => document.getElementById('nofocus').classList.toggle('hidden', focused);
 
 // ---------- Buttons
 ui.on('startBtn', startSession);

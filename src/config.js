@@ -1,6 +1,6 @@
 // Central configuration. To add a new training area, add an entry to AREAS.
 
-export const VERSION = '0.1.0';
+export const VERSION = '0.1.1';
 
 export const AREAS = {
   furuset: {

@@ -74,6 +74,8 @@
     background: rgba(13, 16, 19, .82); border: 1px solid var(--line); border-radius: 10px; white-space: nowrap;
     transition: opacity .6s; }
 
+  #nofocus { position: absolute; left: 50%; top: 22%; transform: translateX(-50%); padding: 10px 16px;
+    background: rgba(13, 16, 19, .92); border: 1px solid var(--warn); border-radius: 10px; }
   @media (max-width: 900px) {
     #help { display: none; }
     #minimap { width: 120px; height: 120px; bottom: 104px; }
@@ -121,6 +123,7 @@
 <div id="hud" class="hidden">
   <div id="toasts"></div>
   <div id="fps"></div>
+  <div id="nofocus" class="hidden">Tastaturet er ikke koblet til simulatoren. Klikk i bildet for å bruke tastene.</div>
   <div id="help">
     <kbd>W</kbd> gass · <kbd>S</kbd> brems · <kbd>A</kbd><kbd>D</kbd> styring · <kbd>Q</kbd><kbd>E</kbd> blinklys ·
     <kbd>Z</kbd><kbd>X</kbd> se til siden · <kbd>Enter</kbd> avslutt og få vurdering

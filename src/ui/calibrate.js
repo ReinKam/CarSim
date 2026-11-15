@@ -13,6 +13,8 @@ const STEPS = [
   { key: 'clutch', text: 'Trå CLUTCHEN helt inn og hold den. Trykk Neste. (Har du ikke clutch: Hopp over.)', optional: true },
   { key: 'blinkLeft', text: 'Hold inne knappen du vil bruke til VENSTRE blinklys. Trykk Neste.', optional: true, button: true },
   { key: 'blinkRight', text: 'Hold inne knappen du vil bruke til HØYRE blinklys. Trykk Neste.', optional: true, button: true },
+  { key: 'reverse', text: 'Hold inne knappen du vil bruke til REVERS av/på. Trykk Neste.', optional: true, button: true },
+  { key: 'recover', text: 'Hold inne knappen du vil bruke til å SETTE BILEN TILBAKE PÅ VEIEN. Trykk Neste.', optional: true, button: true },
 ];
 
 function biggestChange(now, rest, exclude) {

@@ -72,7 +72,12 @@ export class Input {
       }
     });
     window.addEventListener('keyup', (e) => this.keys.delete(e.code));
-    window.addEventListener('blur', () => this.keys.clear());
+    window.addEventListener('blur', () => {
+      this.keys.clear();
+      this.onFocusChange(false);
+    });
+    window.addEventListener('focus', () => this.onFocusChange(true));
+    this.onFocusChange = () => {};
   }
 
   onAction(fn) {

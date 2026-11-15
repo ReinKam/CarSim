@@ -52,7 +52,7 @@ export class Simulation {
 
   /** Switch between drive and reverse. Only possible when (almost) standing still. */
   toggleReverse() {
-    if (Math.abs(this.state.v) > 0.5) return false;
+    if (Math.abs(this.state.v) > 1.2) return false; // up to about 4 km/h
     this.state.gear = this.state.gear === 'R' ? 'D' : 'R';
     return true;
   }
